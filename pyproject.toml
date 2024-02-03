@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "my-ifttt"
+version = "0.1.0"
+description = ""
+authors = ["Nikita Churikov <nikita@chur.ru>"]
+readme = "README.md"
+packages = [{include = "my_ifttt"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+tgcrypto = "^1.2.5"
+hydrogram = "^0.1.4"
+redis = "^5.0.1"
+pydantic = "^2.6.0"
+pydantic-settings = "^2.1.0"
+loguru = "^0.7.2"
+aiohttp = "^3.9.3"
+
+
+[tool.poetry.group.dev.dependencies]
+fakeredis = "^2.21.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

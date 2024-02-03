@@ -1,0 +1,4 @@
+playground/
+*.session*
+.env
+__pycache__/
