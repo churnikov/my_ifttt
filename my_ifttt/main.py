@@ -48,7 +48,7 @@ TG_CHANNELS = [
 
 
 def is_main_news_meduza(message):
-    return "Главные новости" in message.text
+    return message.text and "Главные новости" in message.text
 
 
 async def main():
