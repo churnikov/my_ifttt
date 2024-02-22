@@ -69,8 +69,12 @@ def remove_bullshit(message):
 
 def convert_plain_links_to_html(message):
     """In texts like "https://example.com" convert to <a href="https://example.com">https://example.com</a>"""
-    message.text.html = message.text.html.replace(message.link, f'<a href="{message.link}">{message.link}</a>')
-    return message
+    text = message.text.html
+    for word in text.split():
+        if word.startswith("http"):
+            text = text.replace(word, f'<a href="{word}">{word}</a>')
+    return text
+
 
 
 async def main():
@@ -108,8 +112,6 @@ async def main():
                     if message.text:
                         # This interational agent bullshit is annoying, I'll remove for myself
                         message = remove_bullshit(message)
-                        # Convert plain links to html
-                        message = convert_plain_links_to_html(message)
 
                         messages.append(message)
 
@@ -125,7 +127,7 @@ async def main():
                             title=str(message.chat.username) + " " + str(datetime.now().isoformat()),
                             url=telegram_link,
                             summary=message.text[:128],
-                            html=message.text.html,
+                            html=convert_plain_links_to_html(message),
                             tags=channel.tags,
                             category="article",
                             author=channel.display_name,
