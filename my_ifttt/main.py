@@ -42,13 +42,35 @@ TG_CHANNELS = [
             Channel(username="@pezduzalive", tags=["news", "comedy", "russian"], display_name="Пездуза"),
             Channel(username="@seeallochnaya", tags=["news", "tech", "russian", "nlp"], display_name="Сиолошная"),
             Channel(username="@dksefun", tags=["russian", "swedish", "education"], display_name="Скандинавские откровения"),
-            Channel(username="@astapov_pavel", tags=["russian", "education"], display_name="Павел Астапов"),
             Channel(username="@cumonmychannel", tags=["russian", "pron", "comedy"], display_name="Тот парень с порнозависимостью"),
+            Channel(username="@aihappens", tags=["russian", "tech", "ai"], display_name="AI Happens"),
+            Channel(username="@now_ka", tags=["russian", "science", "tech"], display_name="Now-ka"),
+            Channel(username="@kournikov", tags=["russian", "politics", "news"], display_name="Курников"),
         ]
 
 
 def is_main_news_meduza(message):
     return message.text and "Главные новости" in message.text
+
+
+
+def remove_bullshit(message):
+    internation_agent_template = (
+    "НАСТОЯЩИЙ МАТЕРИАЛ (ИНФОРМАЦИЯ) ПРОИЗВЕДЕН, РАСПРОСТРАНЕН И (ИЛИ) НАПРАВЛЕН "
+    "ИНОСТРАННЫМ АГЕНТОМ (НАИМЕНОВАНИЕ, ФАМИЛИЯ, ИМЯ ОТЧЕСТВО (ПРИ НАЛИЧИИ), СОДЕРЖАЩАЯСЯ В РЕЕСТР ИНОСТРАННЫХ "
+    "АГЕНТОВ) ЛИБО КАСАЕТСЯ ДЕЯТЕЛЬНОСТИ ИНОСТРАННОГО АГЕНТА (НАИМЕНОВАНИЕ, ФАМИЛИЯ, ИМЯ, ОТЧЕСТВО "
+    "(ПРИ НАЛИЧИИ), СОДЕРЖАЩАЯСЯ В РЕЕСТР ИНОСТРАННЫХ АГЕНТОВ)"
+    )
+    # Remove statement above from message text
+    if internation_agent_template in message.text:
+        message.text = message.text.replace(internation_agent_template, " ")
+    return message
+
+
+def convert_plain_links_to_html(message):
+    """In texts like "https://example.com" convert to <a href="https://example.com">https://example.com</a>"""
+    message.text.html = message.text.html.replace(message.link, f'<a href="{message.link}">{message.link}</a>')
+    return message
 
 
 async def main():
@@ -84,6 +106,11 @@ async def main():
 
                     logger.info(f"Processing message {message.link}")
                     if message.text:
+                        # This interational agent bullshit is annoying, I'll remove for myself
+                        message = remove_bullshit(message)
+                        # Convert plain links to html
+                        message = convert_plain_links_to_html(message)
+
                         messages.append(message)
 
                 if not messages:
