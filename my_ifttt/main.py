@@ -41,7 +41,6 @@ TG_CHANNELS = [
             Channel(username="@fe_city_boy", tags=["comedy", "russian"], display_name="Денис Чужой про комедию"),
             Channel(username="@pezduzalive", tags=["news", "comedy", "russian"], display_name="Пездуза"),
             Channel(username="@seeallochnaya", tags=["news", "tech", "russian", "nlp"], display_name="Сиолошная"),
-            Channel(username="@dksefun", tags=["russian", "swedish", "education"], display_name="Скандинавские откровения"),
             Channel(username="@cumonmychannel", tags=["russian", "pron", "comedy"], display_name="Тот парень с порнозависимостью"),
             Channel(username="@aihappens", tags=["russian", "tech", "ai"], display_name="AI Happens"),
             Channel(username="@now_ka", tags=["russian", "science", "tech"], display_name="Now-ka"),
