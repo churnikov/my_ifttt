@@ -53,7 +53,7 @@ def is_main_news_meduza(message):
 
 
 
-def remove_bullshit(message):
+def remove_bullshit(text):
     internation_agent_template = (
     "НАСТОЯЩИЙ МАТЕРИАЛ (ИНФОРМАЦИЯ) ПРОИЗВЕДЕН, РАСПРОСТРАНЕН И (ИЛИ) НАПРАВЛЕН "
     "ИНОСТРАННЫМ АГЕНТОМ (НАИМЕНОВАНИЕ, ФАМИЛИЯ, ИМЯ ОТЧЕСТВО (ПРИ НАЛИЧИИ), СОДЕРЖАЩАЯСЯ В РЕЕСТР ИНОСТРАННЫХ "
@@ -61,9 +61,9 @@ def remove_bullshit(message):
     "(ПРИ НАЛИЧИИ), СОДЕРЖАЩАЯСЯ В РЕЕСТР ИНОСТРАННЫХ АГЕНТОВ)"
     )
     # Remove statement above from message text
-    if internation_agent_template in message.text:
-        message.text = message.text.replace(internation_agent_template, " ")
-    return message
+    if internation_agent_template in text:
+        text = text.replace(internation_agent_template, " ")
+    return text
 
 
 def convert_plain_links_to_html(message):
@@ -110,7 +110,6 @@ async def main():
                     logger.info(f"Processing message {message.link}")
                     if message.text:
                         # This interational agent bullshit is annoying, I'll remove for myself
-                        message = remove_bullshit(message)
 
                         messages.append(message)
 
@@ -121,12 +120,14 @@ async def main():
                 redis.set(f"ifttt:readwise:{channel.username}", int(messages[0].id))
                 for message in messages:
                     telegram_link = message.link
+                    text = convert_plain_links_to_html(message)
+                    text = remove_bullshit(text)
 
                     await readwise.save(
                             title=str(message.chat.username) + " " + str(datetime.now().isoformat()),
                             url=telegram_link,
                             summary=message.text[:128],
-                            html=convert_plain_links_to_html(message),
+                            html=text,
                             tags=channel.tags,
                             category="article",
                             author=channel.display_name,
